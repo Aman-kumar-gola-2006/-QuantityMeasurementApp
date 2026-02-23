@@ -1,0 +1,14 @@
+# Maven
+target/
+
+# Eclipse / STS
+.settings/
+.project
+.classpath
+bin/
+
+# Mac
+.DS_Store
+
+# Compiled files
+*.class

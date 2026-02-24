@@ -1,85 +1,67 @@
 package com.apps.QuantityMeasurementApp;
 public class Length {
 
-    private double value;
-    private LengthUnit unit;
+	private double value;
+	private LengthUnit unit;
 
-    public enum LengthUnit {
-        FEET(12.0),
-        INCHES(1.0),
-        YARDS(36.0),
-        CENTIMETERS(0.393701);
+	public Length(double value, LengthUnit unit) {
+		if (unit == null || !Double.isFinite(value))
+			throw new IllegalArgumentException("Invalid input");
+		this.value = value;
+		this.unit = unit;
+	}
 
-        private final double conversionFactor;
+	private double convertToBaseUnit() {
+		return unit.convertToBaseUnit(value);
+	}
 
-        LengthUnit(double conversionFactor) {
-            this.conversionFactor = conversionFactor;
-        }
+	private double convertFromBaseToTargetUnit(double baseValue, LengthUnit targetUnit) {
+		return targetUnit.convertFromBaseUnit(baseValue);
+	}
 
-        public double getConversionFactor() {
-            return conversionFactor;
-        }
-    }
+	private boolean compare(Length that) {
+		return Math.abs(this.convertToBaseUnit() - that.convertToBaseUnit()) < 0.01;
+	}
 
-    public Length(double value, LengthUnit unit) {
-        if (unit == null || !Double.isFinite(value)) {
-            throw new IllegalArgumentException("Invalid length input");
-        }
-        this.value = value;
-        this.unit = unit;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Length))
+			return false;
+		Length that = (Length) obj;
+		return compare(that);
+	}
 
-    private double convertToBaseUnit() {
-        return value * unit.getConversionFactor();
-    }
+	public Length convertTo(LengthUnit targetUnit) {
+		if (targetUnit == null)
+			throw new IllegalArgumentException("Target unit cannot be null");
 
-    private double convertFromBaseToTargetUnit(double baseValue, LengthUnit targetUnit) {
-        return baseValue / targetUnit.getConversionFactor();
-    }
+		double baseValue = convertToBaseUnit();
+		double converted = convertFromBaseToTargetUnit(baseValue, targetUnit);
+		return new Length(converted, targetUnit);
+	}
 
-    private boolean compare(Length that) {
-        return Math.abs(this.convertToBaseUnit() - that.convertToBaseUnit()) < 0.01;
-    }
+	public Length add(Length thatLength) {
+		if (thatLength == null)
+			throw new IllegalArgumentException("Null length");
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Length)) return false;
-        return compare((Length) o);
-    }
+		double sumBase = this.convertToBaseUnit() + thatLength.convertToBaseUnit();
+		double result = convertFromBaseToTargetUnit(sumBase, this.unit);
+		return new Length(result, this.unit);
+	}
 
-    public Length convertTo(LengthUnit targetUnit) {
-        if (targetUnit == null) throw new IllegalArgumentException();
+	public Length add(Length thatLength, LengthUnit targetUnit) {
+		if (thatLength == null || targetUnit == null)
+			throw new IllegalArgumentException("Invalid input");
 
-        double baseValue = convertToBaseUnit();
-        double converted = convertFromBaseToTargetUnit(baseValue, targetUnit);
-        return new Length(converted, targetUnit);
-    }
+		double sumBase = this.convertToBaseUnit() + thatLength.convertToBaseUnit();
+		double result = convertFromBaseToTargetUnit(sumBase, targetUnit);
+		return new Length(result, targetUnit);
+	}
 
-    // ---------------- UC6 ----------------
-    public Length add(Length thatLength) {
-        if (thatLength == null) throw new IllegalArgumentException();
-
-        double baseSum = this.convertToBaseUnit() + thatLength.convertToBaseUnit();
-        double result = convertFromBaseToTargetUnit(baseSum, this.unit);
-
-        return new Length(result, this.unit);
-    }
-
-    // ---------------- UC7 NEW ----------------
-    public Length add(Length thatLength, LengthUnit targetUnit) {
-        if (thatLength == null || targetUnit == null) {
-            throw new IllegalArgumentException();
-        }
-
-        double baseSum = this.convertToBaseUnit() + thatLength.convertToBaseUnit();
-        double result = convertFromBaseToTargetUnit(baseSum, targetUnit);
-
-        return new Length(result, targetUnit);
-    }
-
-    @Override
-    public String toString() {
-        return value + " " + unit;
-    }
+	@Override
+	public String toString() {
+		return "Quantity(" + value + ", " + unit + ")";
+	}
 }

@@ -1,71 +1,85 @@
 package com.apps.QuantityMeasurementApp;
 
-
 public class Length {
 
-    private final double value;
-    private final LengthUnit unit;
+	private double value;
+	private LengthUnit unit;
 
-    // Base unit = INCHES
-    public enum LengthUnit {
-        FEET(12.0),
-        INCHES(1.0),
-        YARDS(36.0),
-        CENTIMETERS(0.393701);
+	public enum LengthUnit {
+		FEET(12.0), 
+		INCHES(1.0),
+		YARDS(36.0),
+		CENTIMETERS(0.393701);
 
-        private final double conversionFactor;
+		private final double conversionFactor;
 
-        LengthUnit(double conversionFactor) {
-            this.conversionFactor = conversionFactor;
-        }
+		LengthUnit(double conversionFactor) {
+			this.conversionFactor = conversionFactor;
+		}
 
-        public double getConversionFactor() {
-            return conversionFactor;
-        }
-    }
+		public double getConversionFactor() {
+			return conversionFactor;
+		}
+	}
 
-    public Length(double value, LengthUnit unit) {
-        if (unit == null)
-            throw new IllegalArgumentException("Unit cannot be null");
+	public Length(double value, LengthUnit unit) {
+		if (unit == null || !Double.isFinite(value)) {
+			throw new IllegalArgumentException("Invalid Length input");
+		}
+		this.value = value;
+		this.unit = unit;
+	}
 
-        if (Double.isNaN(value) || Double.isInfinite(value))
-            throw new IllegalArgumentException("Invalid numeric value");
+	private double convertToBaseUnit() {
+		return value * unit.getConversionFactor();
+	}
 
-        this.value = value;
-        this.unit = unit;
-    }
+	private boolean compare(Length that) {
+		double a = this.convertToBaseUnit();
+		double b = that.convertToBaseUnit();
+		return Math.abs(a - b) < 0.01;
+	}
 
-    // Convert to base unit (INCHES)
-    private double convertToBaseUnit() {
-        return value * unit.getConversionFactor();
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof Length))
+			return false;
+		Length that = (Length) o;
+		return compare(that);
+	}
 
-    private boolean compare(Length other) {
-        double a = this.convertToBaseUnit();
-        double b = other.convertToBaseUnit();
-        return Math.abs(a - b) < 0.0001;
-    }
+	public Length convertTo(LengthUnit targetUnit) {
+		if (targetUnit == null)
+			throw new IllegalArgumentException();
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Length other = (Length) obj;
-        return compare(other);
-    }
+		double baseValue = convertToBaseUnit();
+		double converted = convertFromBaseToTargetUnit(baseValue, targetUnit);
+		return new Length(converted, targetUnit);
+	}
 
-    // 🔵 UC5 NEW FEATURE → Instance conversion
-    public Length convertTo(LengthUnit targetUnit) {
-        if (targetUnit == null)
-            throw new IllegalArgumentException("Target unit cannot be null");
+	private double convertFromBaseToTargetUnit(double baseValue, LengthUnit targetUnit) {
+		return baseValue / targetUnit.getConversionFactor();
+	}
 
-        double baseValue = convertToBaseUnit();
-        double convertedValue = baseValue / targetUnit.getConversionFactor();
-        return new Length(convertedValue, targetUnit);
-    }
+	// UC6 CORE METHOD 
+	public Length add(Length thatLength) {
+		if (thatLength == null)
+			throw new IllegalArgumentException("Second operand null");
 
-    @Override
-    public String toString() {
-        return value + " " + unit;
-    }
+		double base1 = this.convertToBaseUnit();
+		double base2 = thatLength.convertToBaseUnit();
+
+		double sumBase = base1 + base2;
+
+		double resultInThisUnit = convertFromBaseToTargetUnit(sumBase, this.unit);
+
+		return new Length(resultInThisUnit, this.unit);
+	}
+
+	@Override
+	public String toString() {
+		return value + " " + unit;
+	}
 }

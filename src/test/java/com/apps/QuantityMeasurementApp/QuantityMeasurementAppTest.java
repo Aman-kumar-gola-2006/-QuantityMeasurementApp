@@ -769,4 +769,65 @@ public class QuantityMeasurementAppTest {
 
 		assertThrows(ArithmeticException.class, () -> q1.divide(q2));
 	}
+	
+	// ================= UC13 ROUNDING & DRY TESTS =================
+
+		@Test
+		public void testAddition_RoundsToTwoDecimals() {
+			Quantity<LengthUnit> q1 = new Quantity<>(1, LengthUnit.FEET);
+			Quantity<LengthUnit> q2 = new Quantity<>(1, LengthUnit.INCHES);
+
+			Quantity<LengthUnit> result = q1.add(q2, LengthUnit.FEET);
+
+			assertEquals(1.08, result.getValue(), 0.001);
+		}
+
+		@Test
+		public void testSubtraction_RoundsToTwoDecimals() {
+			Quantity<LengthUnit> q1 = new Quantity<>(1, LengthUnit.FEET);
+			Quantity<LengthUnit> q2 = new Quantity<>(1, LengthUnit.INCHES);
+
+			Quantity<LengthUnit> result = q1.subtract(q2, LengthUnit.FEET);
+
+			assertEquals(0.92, result.getValue(), 0.001);
+		}
+
+		@Test
+		public void testAdd_ResultIsNewObject() {
+			Quantity<LengthUnit> q1 = new Quantity<>(1, LengthUnit.FEET);
+			Quantity<LengthUnit> q2 = new Quantity<>(12, LengthUnit.INCHES);
+
+			Quantity<LengthUnit> result = q1.add(q2);
+
+			assertNotSame(q1, result);
+			assertNotSame(q2, result);
+		}
+
+		@Test
+		public void testSubtract_ResultIsNewObject() {
+			Quantity<LengthUnit> q1 = new Quantity<>(2, LengthUnit.FEET);
+			Quantity<LengthUnit> q2 = new Quantity<>(12, LengthUnit.INCHES);
+
+			Quantity<LengthUnit> result = q1.subtract(q2);
+
+			assertNotSame(q1, result);
+		}
+
+		@Test
+		public void testConvertTo_DoesNotMutateOriginalObject() {
+			Quantity<LengthUnit> original = new Quantity<>(1, LengthUnit.FEET);
+			original.convertTo(LengthUnit.INCHES);
+
+			assertEquals(1, original.getValue());
+			assertEquals(LengthUnit.FEET, original.getUnit());
+		}
+
+		@Test
+		public void testEquals_UsesTolerance() {
+			Quantity<LengthUnit> q1 = new Quantity<>(1, LengthUnit.FEET);
+			Quantity<LengthUnit> q2 = new Quantity<>(12.001, LengthUnit.INCHES);
+
+			assertTrue(q1.equals(q2));
+		}
+	
 }

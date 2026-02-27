@@ -1,5 +1,6 @@
 package com.apps.QuantityMeasurementApp;
 
+
 public interface IMeasurable {
 
     double getConversionFactor();

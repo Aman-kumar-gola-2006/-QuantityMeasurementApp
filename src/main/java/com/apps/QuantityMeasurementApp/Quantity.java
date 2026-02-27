@@ -45,7 +45,7 @@ public class Quantity<U extends IMeasurable> {
 		if (other == null)
 			throw new IllegalArgumentException("Quantity cannot be null");
 
-		// 🚨 category check (VERY IMPORTANT)
+		// category check (VERY IMPORTANT)
 		if (!this.unit.getClass().equals(other.unit.getClass()))
 			throw new IllegalArgumentException("Incompatible unit categories");
 
@@ -62,7 +62,7 @@ public class Quantity<U extends IMeasurable> {
 		if (other == null || targetUnit == null)
 			throw new IllegalArgumentException("Invalid input");
 
-		// 🚨 category check
+		// category check
 		if (!this.unit.getClass().equals(other.unit.getClass()))
 			throw new IllegalArgumentException("Incompatible unit categories");
 

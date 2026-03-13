@@ -1,5 +1,4 @@
-package com.apps.QuantityMeasurementApp;
-
+package com.apps.core;
 
 import java.util.function.Function;
 

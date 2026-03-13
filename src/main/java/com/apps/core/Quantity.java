@@ -1,4 +1,4 @@
-package com.apps.QuantityMeasurementApp;
+package com.apps.core;
 
 import java.util.Objects;
 import java.util.function.DoubleBinaryOperator;
@@ -182,4 +182,4 @@ public class Quantity<U extends IMeasurable> {
 	public String toString() {
 		return value + " " + unit.getUnitName();
 	}
-}}
+}

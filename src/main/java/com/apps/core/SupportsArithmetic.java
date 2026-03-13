@@ -1,5 +1,4 @@
-package com.apps.QuantityMeasurementApp;
-
+package com.apps.core;
 
 @FunctionalInterface
 public interface SupportsArithmetic {

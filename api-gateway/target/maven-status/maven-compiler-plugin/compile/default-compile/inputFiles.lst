@@ -1,0 +1,5 @@
+/Users/amankumargola/Desktop/QuantityMeasurementApp/api-gateway/src/main/java/com/qma_microservices/api_gateway/util/JwtUtil.java
+/Users/amankumargola/Desktop/QuantityMeasurementApp/api-gateway/src/main/java/com/qma_microservices/api_gateway/filter/JwtAuthenticationFilter.java
+/Users/amankumargola/Desktop/QuantityMeasurementApp/api-gateway/src/main/java/com/qma_microservices/api_gateway/exception/GlobalExceptionHandler.java
+/Users/amankumargola/Desktop/QuantityMeasurementApp/api-gateway/src/main/java/com/qma_microservices/api_gateway/ApiGatewayApplication.java
+/Users/amankumargola/Desktop/QuantityMeasurementApp/api-gateway/src/main/java/com/qma_microservices/api_gateway/config/GatewayConfig.java
